@@ -1,6 +1,7 @@
 package com.example.notesapp;
 
-import com.example.notesapp.entity.Note;
+import com.example.notesapp.dto.AddNoteDto;
+import com.example.notesapp.dto.NoteDto;
 import com.example.notesapp.service.NoteService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,12 @@ public class NoteTest {
     @Test
     public void createNoteWithUser(){
 
-        Note note = Note.builder()
+        AddNoteDto note = AddNoteDto.builder()
                 .title("Dhoom Machale script")
                 .description("Once there was a clever thief, who got away with a lot robberies until a girl came into his life")
                 .build();
 
-       Note newNote = noteService.createNoteForUser(note,1L);
+       NoteDto newNote = noteService.createNoteForUser(note,1L);
 
        System.out.println(newNote);
 
@@ -38,18 +39,20 @@ public class NoteTest {
     @Test
     public void updateNote(){
 
-        Note note = new Note();
+        NoteDto note = new NoteDto();
         note.setId(2L);
         note.setTitle("Updated title");
         note.setDescription("Updated description");
 
-       Note newNote = noteService.updateNote(note);
+       NoteDto newNote = noteService.updateNote(note);
+
+       System.out.println(newNote);
     }
 
     @Test
     public void findNote(){
 
-        Note newNote = noteService.findNoteById(3L);
+        NoteDto newNote = noteService.findNoteById(3L);
 
         System.out.println(newNote);
     }
@@ -57,7 +60,7 @@ public class NoteTest {
     @Test
     public void findAllNotes(){
 
-        List<Note> notes = noteService.findAllNotesByUser(1L);
+        List<NoteDto> notes = noteService.findAllNotesByUser(1L);
 
         notes.forEach(System.out::println);
     }

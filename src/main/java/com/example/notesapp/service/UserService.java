@@ -1,7 +1,8 @@
 package com.example.notesapp.service;
 
+import com.example.notesapp.dto.AddUserDto;
+import com.example.notesapp.dto.UserDto;
 import com.example.notesapp.entity.User;
-import com.example.notesapp.repository.NotesRepository;
 import com.example.notesapp.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -12,18 +13,25 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
-    private  final NotesRepository notesRepository;
 
 
-    public User createUser(User user){
+    public UserDto createUser(AddUserDto addUserDto){
 
-        return userRepository.save(user);
+        User user = new User();
+
+        user.setName(addUserDto.getName());
+        user.setEmail(addUserDto.getEmail());
+        user.setPassword(addUserDto.getPassword());
+
+        user = userRepository.save(user);
+
+        return  new UserDto(user.getId(),user.getName(),user.getEmail(),user.getPassword()) ;
     }
 
     @Transactional
-    public User updateUser(User updateUser){
+    public UserDto updateUser(Long id,UserDto updateUser){
 
-        Long id = updateUser.getId();
+
 
         User user = userRepository.findById(id)
                 .orElseThrow(()->
@@ -32,7 +40,9 @@ public class UserService {
         user.setName(updateUser.getName());
         user.setPassword(updateUser.getPassword());
 
-        return userRepository.save(user);
+        user = userRepository.save(user);
+
+        return new UserDto(user.getId(),user.getName(),user.getEmail(),user.getPassword());
 
     }
 

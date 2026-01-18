@@ -6,8 +6,8 @@ VALUES
 ("sham","sham@gmail.com","sham@321");
 
 
-INSERT INTO note (title,description,user_id)
+INSERT INTO note (title,description,user_id,create_at)
 VALUES
-("First Title","First Movie script for the movie",1),
-("Second Title","Second Movie script for the movie",1),
-("Third Title","Third Movie script for the movie",1);
+("First Title","First Movie script for the movie",1,'2005-05-03T12:00:00'),
+("Second Title","Second Movie script for the movie",1,'2007-12-04T10:15:30'),
+("Third Title","Third Movie script for the movie",2,'2002-09-04T08:10:20');

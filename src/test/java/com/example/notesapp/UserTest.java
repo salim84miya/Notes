@@ -1,6 +1,7 @@
 package com.example.notesapp;
 
-import com.example.notesapp.entity.User;
+import com.example.notesapp.dto.AddUserDto;
+import com.example.notesapp.dto.UserDto;
 import com.example.notesapp.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +18,13 @@ public class UserTest {
     @Test
     public void createUserTest(){
 
-        User user = User.builder()
+        AddUserDto addUserDto = AddUserDto.builder()
                 .email("salim@gmail.com")
                 .password("salim123456")
                 .name("salim")
                 .build();
 
-        User newUser = userService.createUser(user);
+        UserDto newUser = userService.createUser(addUserDto);
 
         System.out.println(newUser);
 
@@ -33,14 +34,14 @@ public class UserTest {
     @Test
     public void updateUser(){
 
-        User user = User.builder()
+        UserDto user = UserDto.builder()
                 .id(2L)
                 .password("salim123456")
                 .name("salim")
                 .build();
 
 
-       User updatedUser = userService.updateUser(user);
+       UserDto updatedUser = userService.updateUser(2L,user);
 
        System.out.println(updatedUser);
     }

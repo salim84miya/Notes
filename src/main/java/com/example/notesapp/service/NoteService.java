@@ -1,5 +1,7 @@
 package com.example.notesapp.service;
 
+import com.example.notesapp.dto.AddNoteDto;
+import com.example.notesapp.dto.NoteDto;
 import com.example.notesapp.entity.Note;
 import com.example.notesapp.entity.User;
 import com.example.notesapp.repository.NotesRepository;
@@ -22,22 +24,34 @@ public class NoteService {
 
 
     @Transactional
-    public Note createNoteForUser(Note note,Long id){
+    public NoteDto createNoteForUser(AddNoteDto note, Long userId){
 
-       Note newNote =  notesRepository.save(note);
+        //create new Note in database
+       Note newNote =  new Note();
+       newNote.setTitle(note.getTitle());
+       newNote.setDescription(note.getDescription());
 
-       User newUser = userRepository.findById(id)
+       newNote = notesRepository.save(newNote);
+
+       //find user with passed id
+       User newUser = userRepository.findById(userId)
                .orElseThrow(()->
-                       new IllegalArgumentException("No user found with id "+id));
+                       new IllegalArgumentException("No user found with id "+userId));
 
+       //set note with the user
        newNote.setUser(newUser);
 
-       return newNote;
+
+       return new NoteDto(
+               newNote.getId(),
+               newNote.getTitle(),
+               newNote.getDescription(),
+               newNote.getCreateAt().toString());
     }
 
 
     @Transactional
-    public Note updateNote(Note updateNote){
+    public NoteDto updateNote(NoteDto updateNote){
 
         Note oldNote = notesRepository.findById(updateNote.getId()).orElseThrow(()->
                     new IllegalArgumentException("No note found with id "+updateNote.getId()));
@@ -45,7 +59,13 @@ public class NoteService {
         oldNote.setTitle(updateNote.getTitle());
         oldNote.setDescription(updateNote.getDescription());
 
-       return notesRepository.save(oldNote);
+        oldNote = notesRepository.save(oldNote);
+
+       return new NoteDto(
+               oldNote.getId(),
+               oldNote.getTitle(),
+               oldNote.getDescription(),
+               oldNote.getCreateAt().toString());
     }
 
     @Transactional
@@ -55,17 +75,31 @@ public class NoteService {
     }
 
     @Transactional
-    public List<Note> findAllNotesByUser(Long id){
+    public List<NoteDto> findAllNotesByUser(Long id){
 
-        return  notesRepository.findAll();
+        List<Note> notes = notesRepository.findAllNoteByUser(id);
+
+        return  notes.stream()
+                .map(note -> new NoteDto(
+                        note.getId(),
+                        note.getTitle(),
+                        note.getDescription(),
+                        note.getCreateAt().toString()
+                        )
+                ).toList();
     }
 
     @Transactional
-    public Note findNoteById(Long id){
+    public NoteDto findNoteById(Long id){
 
         Note note = notesRepository.findById(id).orElseThrow(
                 ()->new IllegalArgumentException("No note found with id "+id));
-        return note;
+
+        return new NoteDto(
+                note.getId(),
+                note.getTitle(),
+                note.getDescription(),
+                note.getCreateAt().toString());
     }
 
 
