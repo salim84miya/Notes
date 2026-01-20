@@ -19,7 +19,7 @@ public class UserTest {
     public void createUserTest(){
 
         AddUserDto addUserDto = AddUserDto.builder()
-                .email("salim@gmail.com")
+                .email("salimgmail.com")
                 .password("salim123456")
                 .name("salim")
                 .build();
