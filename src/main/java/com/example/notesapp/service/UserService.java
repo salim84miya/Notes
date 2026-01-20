@@ -56,9 +56,12 @@ public class UserService {
     }
 
 
-    public Optional<User> getUserById(Long id){
+    public UserDto getUserById(Long id){
 
-        return userRepository.findById(id);
+        User user =userRepository.findById(id).orElseThrow(()->
+                new IllegalArgumentException("no user found with id "+id));;
+
+        return new UserDto(user.getId(),user.getName(),user.getEmail(),user.getPassword());
     }
 
 

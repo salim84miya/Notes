@@ -13,6 +13,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    //No resource found exception handling
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> resourceNotFoundHandle(IllegalArgumentException exception){
 
@@ -22,6 +24,9 @@ public class GlobalExceptionHandler {
         return ResponseHandler.responseBuilder(null,
                 HttpStatus.NOT_FOUND,errors,LocalDateTime.now());
     }
+
+
+    //Invalid method argument exception
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> invalidArgumentException(MethodArgumentNotValidException exception){
@@ -37,5 +42,17 @@ public class GlobalExceptionHandler {
 
         return  ResponseHandler.responseBuilder(null,
                 HttpStatus.BAD_REQUEST,errors,LocalDateTime.now());
+    }
+
+    //Internal server errors
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> internalServerError(Exception exception){
+
+        Map<String,String> error= new HashMap<>();
+
+        error.put("errorMsg",exception.getLocalizedMessage());
+
+        return ResponseHandler.responseBuilder(null,HttpStatus.BAD_GATEWAY,error,LocalDateTime.now());
     }
 }

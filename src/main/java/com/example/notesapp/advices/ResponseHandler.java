@@ -10,7 +10,8 @@ import java.util.Map;
 public class ResponseHandler {
 
     public static ResponseEntity<Object> responseBuilder(
-            Object data, HttpStatus status, Map<String,String> error, LocalDateTime timeStamp
+            Object data, HttpStatus status, Map<String,String> error,
+            LocalDateTime timeStamp
             ){
 
         Map<String,Object> response = new HashMap<>();

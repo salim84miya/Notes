@@ -3,7 +3,6 @@ package com.example.notesapp.controller;
 import com.example.notesapp.advices.ResponseHandler;
 import com.example.notesapp.dto.AddUserDto;
 import com.example.notesapp.dto.UserDto;
-import com.example.notesapp.entity.User;
 import com.example.notesapp.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,24 +28,30 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public UserDto updateUser(@PathVariable Long id, @RequestBody UserDto userDto){
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserDto userDto){
 
-        return userService.updateUser(id,userDto);
+        UserDto user  = userService.updateUser(id,userDto);
+
+        return ResponseHandler.responseBuilder(user,HttpStatus.OK,null,LocalDateTime.now());
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id){
+    public ResponseEntity<?> deleteUser(@PathVariable Long id){
 
          userService.deleteUser(id);
+
+         var deleterMsg = "User with id "+id+" successfully deleted";
+
+         return ResponseHandler.responseBuilder(deleterMsg,HttpStatus.OK,null,LocalDateTime.now());
     }
 
     @GetMapping("/user/{id}")
     public ResponseEntity<?> findUserById(@PathVariable Long id){
 
-        User user = userService.getUserById(id).orElseThrow(()->
-                new IllegalArgumentException("no user found with id"+id));
+        UserDto user = userService.getUserById(id);
 
-        return new ResponseEntity<>(user,HttpStatus.NOT_FOUND);
+        return ResponseHandler.responseBuilder(user,
+                HttpStatus.OK,null,LocalDateTime.now());
     }
 
 

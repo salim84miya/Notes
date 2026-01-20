@@ -1,31 +1,67 @@
 package com.example.notesapp.controller;
 
+import com.example.notesapp.advices.ResponseHandler;
+import com.example.notesapp.dto.AddNoteDto;
 import com.example.notesapp.dto.NoteDto;
 import com.example.notesapp.service.NoteService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/note")
 public class NoteController {
 
 
     private final NoteService noteService;
 
     @GetMapping("/{id}")
-    public NoteDto getNoteById(@PathVariable Long id){
+    public ResponseEntity<?> getNoteById(@PathVariable Long id){
 
-        return noteService.findNoteById(id);
+        NoteDto note = noteService.findNoteById(id);
+
+        return ResponseHandler.responseBuilder(note, HttpStatus.OK,null, LocalDateTime.now());
+
     }
 
-    @GetMapping("/{userId}")
-    public List<NoteDto> getAllNotes(@PathVariable Long userId){
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getAllNotes(@PathVariable Long userId){
 
-        return noteService.findAllNotesByUser(userId);
+        List<NoteDto> notes =  noteService.findAllNotesByUser(userId);
+
+        return ResponseHandler.responseBuilder(notes,HttpStatus.OK,null,LocalDateTime.now());
+
+    }
+
+    @PostMapping("/create/{id}")
+    public ResponseEntity<?> createNote(@PathVariable Long id, @RequestBody AddNoteDto note){
+
+        NoteDto newNote = noteService.createNoteForUser(note,id);
+
+        return ResponseHandler.responseBuilder(newNote,HttpStatus.OK,null,LocalDateTime.now());
+    }
+
+    @PutMapping("/")
+    public ResponseEntity<?> updateNote(@RequestBody NoteDto note){
+
+        NoteDto updatedNote = noteService.updateNote(note);
+
+        return ResponseHandler.responseBuilder(updatedNote,HttpStatus.OK,null,LocalDateTime.now());
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteNote(@PathVariable Long id){
+
+        noteService.deleteNote(id);
+
+        var deleteMsg = "Note with id "+id+" successfully deleted";
+
+        return ResponseHandler.responseBuilder(deleteMsg,HttpStatus.OK,null,LocalDateTime.now());
     }
 
 
