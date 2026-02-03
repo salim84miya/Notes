@@ -1,8 +1,8 @@
 package com.example.notesapp;
 
-import com.example.notesapp.dto.AddNoteDto;
-import com.example.notesapp.dto.NoteDto;
-import com.example.notesapp.service.NoteService;
+import com.example.notesapp.notes.dto.AddNoteDto;
+import com.example.notesapp.notes.dto.NoteDto;
+import com.example.notesapp.notes.service.NoteService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
