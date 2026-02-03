@@ -1,13 +1,10 @@
 package com.example.notesapp.user.entity;
 
+import com.example.notesapp.auth.entity.AppUser;
 import com.example.notesapp.notes.entity.Note;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Getter
@@ -17,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements UserDetails {
+public class User  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,21 +26,14 @@ public class User implements UserDetails {
     @Column(unique = true,nullable = false)
     private String email;
 
-    @Column(length = 20,nullable = false)
+    @Column(nullable = false)
     private String password;
 
     @ToString.Exclude
     @OneToMany(mappedBy ="user",orphanRemoval =  true,cascade = {CascadeType.ALL})
     private List<Note> note = new ArrayList<>();
 
+    @OneToOne
+    private AppUser appUser;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
-
-    @Override
-    public String getUsername() {
-        return name;
-    }
 }

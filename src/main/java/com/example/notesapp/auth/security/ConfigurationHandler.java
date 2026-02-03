@@ -27,7 +27,7 @@ public class ConfigurationHandler {
 
                 .authorizeHttpRequests(auth->auth
 
-                .requestMatchers("/note/**","/auth/**").permitAll()
+                .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
         )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

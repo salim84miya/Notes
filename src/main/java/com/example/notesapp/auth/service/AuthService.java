@@ -4,6 +4,9 @@ import com.example.notesapp.auth.dto.*;
 import com.example.notesapp.auth.entity.AppUser;
 import com.example.notesapp.auth.repository.AppUserRepository;
 import com.example.notesapp.auth.security.AuthUtil;
+import com.example.notesapp.user.entity.User;
+import com.example.notesapp.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +23,7 @@ public class AuthService {
     private final AuthUtil authUtil;
     private final AppUserRepository appUserRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
     public LoginResponseDto loginUser(LoginDto userDto){
 
@@ -34,6 +38,7 @@ public class AuthService {
         return new LoginResponseDto(token,user.getId());
     }
 
+    @Transactional
     public  SignupResponseDto signUp(SignupDto userDto) {
 
         Boolean isExists = appUserRepository.existsByUsername(userDto.getUsername());
@@ -43,17 +48,29 @@ public class AuthService {
         }
 
 
-      AppUser user = AppUser.builder()
+      AppUser appUser = AppUser.builder()
               .username(userDto.getUsername())
               .password(passwordEncoder.encode(userDto.getPassword()))
+              .email(userDto.getEmail())
                       .build();
 
-      user = appUserRepository.save(user);
+      appUser = appUserRepository.save(appUser);
+
+      User user = new User();
+      user.setName(appUser.getUsername());
+      user.setEmail(appUser.getEmail());
+      user.setPassword(appUser.getPassword());
+      user.setAppUser(appUser);
+
+      user = userRepository.save(user);
+
+      appUser.setUser(user);
 
       return SignupResponseDto.builder()
-              .id(user.getId())
-              .username(user.getUsername())
-              .password(user.getPassword())
+              .id(appUser.getId())
+              .username(appUser.getUsername())
+              .email(appUser.getEmail())
+              .password(appUser.getPassword())
               .build();
 
     }
